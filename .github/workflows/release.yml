@@ -1,5 +1,4 @@
 ---
----
 name: Release and deploy to Galaxy
 on:  # yamllint disable-line rule:truthy
   workflow_dispatch:
