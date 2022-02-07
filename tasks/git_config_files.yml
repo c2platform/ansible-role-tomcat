@@ -1,0 +1,12 @@
+---
+- name: Git config file  # noqa ignore-errors
+  ansible.builtin.copy:
+    src: "{{ tomcat_git_config['dir'] }}/{{ app['properties-git']['files'][item]['source'] }}"
+    dest: "{{ app['properties-git']['files'][item]['dest'] }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    remote_src: "{{ not tomcat_git_config_control_node }}"
+    mode: "{{ app['properties-git']['files'][item]['mode']|default('0755') }}"
+  with_items: "{{ app['properties-git']['files'] }}"
+  notify: "{{ app['properties-git']['files'][item]['notify']|default(omit) }}"
+  ignore_errors: "{{ app['properties-git']['files'][item]['ignore_errors']|default(False) }}"

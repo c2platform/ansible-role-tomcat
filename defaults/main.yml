@@ -1,0 +1,154 @@
+---
+tomcat_home: /opt/tomcat
+tomcat_version: 9.0.40
+tomcat_home_version: "{{ tomcat_home  }}/{{ tomcat_home|basename }}-{{ tomcat_version }}"  # /opt/tomcat/tomcat-9.0.40
+tomcat_home_link: "{{ tomcat_home  }}/{{ tomcat_home|basename }}"  # /opt/tomcat/tomcat
+tomcat_apps_properties_folder: "{{ tomcat_home_link }}/conf"  # /opt/tomcat/tomcat/conf
+tomcat_user: tomcat
+tomcat_group: tomcat
+tomcat_non_ssl_connector_port: 8080
+tomcat_ssl_connector_port: 8443
+tomcat_shutdown_port: 8005
+tomcat_ajp_port: 8009
+tomcat_jre_home: /usr
+tomcat_service_name: tomcat
+tomcat_service_state: started
+tomcat_service_enabled: yes
+tomcat_address: 0.0.0.0
+
+# Configure tomcat access logs
+tomcat_access_log_enabled: yes
+tomcat_access_log_directory: logs
+tomcat_access_log_prefix: localhost_access_log
+tomcat_access_log_suffix: ".txt"
+tomcat_access_log_pattern: "%h %l %u %t &quot;%r&quot; %s %b"
+
+tomcat_environment_variables:
+  - name: JRE_HOME
+    value: "{{ tomcat_jre_home }}"
+
+# tomcat_java_opts: >-
+#   -Xms512m
+#   -Xmx1024m
+
+tomcat_catalina_opts: >-
+  -Xms512m
+  -Xmx1024m
+
+tomcat_open_files: 4096
+
+tomcat_versions:
+  9.0.40:
+    url: https://archive.apache.org/dist/tomcat/tomcat-9/v9.0.40/bin/apache-tomcat-9.0.40.tar.gz
+    checksum: "sha256: bb52b10b500f113dc4b504e34f4ac0a5f48f31d93ea261c721459a4b7e72ca52"
+  7.0.106:
+    url: https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.106/bin/apache-tomcat-7.0.106.tar.gz
+    checksum: "sha256: 533c246def2624de7f79ff6edfdf5695d56f7267ddc337385c2e4b502f963606"
+
+tomcat_listeners:
+  - className: org.apache.catalina.core.AprLifecycleListener
+    SSLEngine: on
+  - className: org.apache.catalina.startup.VersionLoggerListener
+  - className: org.apache.catalina.core.JreMemoryLeakPreventionListener
+  - className: org.apache.catalina.mbeans.GlobalResourcesLifecycleListener
+  - className: org.apache.catalina.core.ThreadLocalLeakPreventionListener
+
+tomcat_services:
+  - name: Catalina
+    connectors:
+      - port: 8080
+        protocol: HTTP/1.1
+        connectionTimeout: 20000
+        URIEncoding: UTF-8
+        redirectPort: "{{ tomcat_ssl_connector_port }}"
+      - port: 8443
+        protocol: HTTP/1.1
+        SSLEnabled: "true"
+        maxThreads: 150
+        scheme: https
+        secure: true
+        clientAuth: false
+        sslProtocol: TLSv1.2
+        SSLCipherSuite: ECDHE-RSA-AES128-GCM-SHA256
+        SSLCertificateFile: /opt/tomcat/tomcat/conf/https.crt
+        SSLCertificateKeyFile: /opt/tomcat/tomcat/conf/https.key
+        SSLHonorCipherOrder: "true"
+        server: server
+        # state: absent # https enabled
+      - port: 8009
+        protocol: AJP/1.3
+        tomcatAuthentication: "true"
+        secretRequired: "false"
+        redirectPort: "{{ tomcat_ssl_connector_port }}"
+    engine:
+      properties:
+        name: Catalina
+        defaultHost: localhost
+      # realms:
+      #   - className: org.apache.catalina.realm.UserDatabaseRealm
+      #     resourceName: UserDatabase
+      realms:
+        - properties:
+            className: org.apache.catalina.realm.LockOutRealm
+          realm:
+            properties:
+              className: org.apache.catalina.realm.UserDatabaseRealm
+              resourceName: UserDatabase
+      host:
+        properties:
+          name: localhost
+          appBase: webapps
+          unpackWARS: "true"
+          autoDeploy: "true"
+        valves:
+          - className: org.apache.catalina.valves.AccessLogValve
+            directory: logs
+            prefix: localhost_access_log
+            suffix: .txt
+            pattern: "%h %l %u %t &quot;%r&quot; %s %b"
+        contexts: []
+
+tomcat_roles:
+  - admin
+  - manager
+  - admin-gui
+  - admin-script
+  - manager-gui
+  - manager-script
+  - manager-jmx
+  - manager-status
+
+# Note: users with the manager-gui role should not be granted either the manager-script or manager-jmx roles
+tomcat_users:
+  admin:
+    username: admin
+    password: supersecure
+    roles: admin, manager, admin-gui, admin-script, manager-gui, manager-status
+    state: absent  # present
+  jmx:
+    username: jmx
+    password: supersecure
+    roles: manager-jmx
+    state: absent  # present
+
+tomcat_manager:
+  valve:
+    className: org.apache.catalina.valves.RemoteAddrValve
+    allow: "127\\.\\d+\\.\\d+\\.\\d+|::1|0:0:0:0:0:0:0:1"
+
+tomcat_git_config_control_node: no
+tomcat_git_config_parent_dir: /var/tmp
+
+tomcat_files: []
+tomcat_directories: []
+tomcat_acl: []
+
+tomcat_service:
+  Name: "{{ tomcat_service_name }}"
+  Unit:
+    Description: "{{ tomcat_service_name }}"
+  Service:
+    User: "{{ tomcat_user }}"
+    Group: "{{ tomcat_group }}"
+    ExecStart: "/bin/bash {{ tomcat_home_version }}/bin/catalina.sh run"
+    LimitNOFILE: "{{ tomcat_open_files }}"

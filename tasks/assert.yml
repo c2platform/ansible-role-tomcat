@@ -1,0 +1,158 @@
+---
+- name: test if tomcat_versions is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_versions is defined
+    quiet: yes
+
+- name: test if tomcat_home is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_home is defined
+      - tomcat_home is string
+    quiet: yes
+
+- name: test if tomcat_version is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_version is defined
+    quiet: yes
+
+- name: test if tomcat_user is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_user is defined
+      - tomcat_user is string
+    quiet: yes
+
+- name: test if tomcat_group is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_group is defined
+      - tomcat_group is string
+    quiet: yes
+
+- name: test if tomcat_catalina_opts is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_catalina_opts is defined
+      - tomcat_catalina_opts is string
+    quiet: yes
+
+- name: test if tomcat_non_ssl_connector_port is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_non_ssl_connector_port is defined
+      - tomcat_non_ssl_connector_port is number
+      - tomcat_non_ssl_connector_port > 0
+      - tomcat_non_ssl_connector_port < 65536
+    quiet: yes
+
+- name: test if tomcat_ssl_connector_port is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_ssl_connector_port is defined
+      - tomcat_ssl_connector_port is number
+      - tomcat_ssl_connector_port > 0
+      - tomcat_ssl_connector_port < 65536
+    quiet: yes
+
+- name: test if tomcat_shutdown_port is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_shutdown_port is defined
+      - tomcat_shutdown_port is number
+      - tomcat_shutdown_port > 0
+      - tomcat_shutdown_port < 65536
+    quiet: yes
+
+- name: test if tomcat_ajp_port is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_ajp_port is defined
+      - tomcat_ajp_port is number
+      - tomcat_ajp_port > 0
+      - tomcat_ajp_port < 65536
+    quiet: yes
+
+- name: test if port collisions occur is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_non_ssl_connector_port != tomcat_ssl_connector_port
+      - tomcat_non_ssl_connector_port != tomcat_shutdown_port
+      - tomcat_non_ssl_connector_port != tomcat_ajp_port
+      - tomcat_ssl_connector_port != tomcat_shutdown_port
+      - tomcat_ssl_connector_port != tomcat_ajp_port
+      - tomcat_shutdown_port != tomcat_ajp_port
+    quiet: yes
+
+- name: test if tomcat_jre_home is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_jre_home is defined
+      - tomcat_jre_home is string
+    quiet: yes
+
+- name: test if tomcat_service_state is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_service_state is defined
+      - tomcat_service_state in [ "reloaded", "restarted", "started", "stopped" ]
+    quiet: yes
+
+- name: test if tomcat_service_enabled is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_service_enabled is defined
+      # - tomcat_service_enabled is boolean
+    quiet: yes
+
+- name: test if tomcat_address is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_address is defined
+      - tomcat_address is string
+    quiet: yes
+
+- name: test if tomcat_access_log_enabled is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_access_log_enabled is defined
+      # - tomcat_access_log_enabled is boolean
+    quiet: yes
+
+- name: test if tomcat_access_log_directory is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_access_log_directory is defined
+      - tomcat_access_log_directory is string
+    quiet: yes
+  when:
+    - tomcat_access_log_enabled | bool
+
+- name: test if tomcat_access_log_prefix is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_access_log_prefix is defined
+      - tomcat_access_log_prefix is string
+    quiet: yes
+  when:
+    - tomcat_access_log_enabled | bool
+
+- name: test if tomcat_access_log_suffix is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_access_log_suffix is defined
+      - tomcat_access_log_suffix is string
+    quiet: yes
+  when:
+    - tomcat_access_log_enabled | bool
+
+- name: test if tomcat_access_log_pattern is set correctly
+  ansible.builtin.assert:
+    that:
+      - tomcat_access_log_pattern is defined
+      - tomcat_access_log_pattern is string
+    quiet: yes
+  when:
+    - tomcat_access_log_enabled | bool

@@ -1,0 +1,45 @@
+---
+- name: Properties folder
+  file:
+    path: "{{ prop_folder }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    state: directory
+    mode: 0755
+  with_items: "{{ ((tomcat_apps|selectattr('properties_folder', 'defined')|map(attribute='properties_folder')|list) + [tomcat_apps_properties_folder])|unique }}"
+  loop_control:
+    label: "{{ prop_folder }}"
+    loop_var: prop_folder
+
+- name: Java properties
+  template:
+    dest: "{{ app['name']|c2platform.mw.tomcat_properties_file_path(app['properties_folder']|default(tomcat_apps_properties_folder)) }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    src: java.properties.j2
+    mode: 0644
+  with_items: "{{ tomcat_apps|selectattr('properties', 'defined')|list }}"
+  loop_control:
+    label: "{{ app['name']|c2platform.mw.tomcat_properties_file_path(app['properties_folder']|default(tomcat_apps_properties_folder)) }}"
+    loop_var: app
+  notify:
+    - restart tomcat instance
+
+- name: Deploy WAR
+  get_url:
+    url: "{{ app['source'] }}"
+    dest: "{{ tomcat_home_version }}/webapps/{{ app['filename'] }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    validate_certs: no
+  with_items: "{{ tomcat_apps|selectattr('source', 'defined')|list }}"
+  loop_control:
+    label: "{{ app['source'] }} → {{ app['filename'] }}"
+    loop_var: app
+
+- name: Git config
+  include_tasks: "git_config_files.yml"
+  with_items: "{{ tomcat_apps|selectattr('properties-git', 'defined')|list }}"
+  loop_control:
+    label: "{{ app['name'] }}"
+    loop_var: app

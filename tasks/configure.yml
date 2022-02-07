@@ -1,0 +1,27 @@
+---
+- name: Configure conf/server.xml
+  template:
+    src: server.xml.j2
+    dest: "{{ tomcat_home_version }}/conf/server.xml"
+    mode: "0644"
+    backup: yes
+  notify:
+    - restart tomcat instance
+
+- name: Configure conf/tomcat-users.xml
+  template:
+    src: tomcat-users.xml.j2
+    dest: "{{ tomcat_home_version }}/conf/tomcat-users.xml"
+    mode: "0644"
+    backup: yes
+  notify:
+    - restart tomcat instance
+
+- name: Configure bin/setenv.sh
+  template:
+    src: setenv.sh.j2
+    dest: "{{ tomcat_home_version }}/bin/setenv.sh"
+    mode: "0644"
+    backup: yes
+  notify:
+    - restart tomcat instance

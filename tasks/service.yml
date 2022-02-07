@@ -1,0 +1,13 @@
+---
+- name: Service
+  include_role:
+    name: c2platform.core.service
+    tasks_from: main
+  vars:
+    service: "{{ tomcat_service }}"
+
+- name: Manage service
+  service:
+    name: "{{ tomcat_service_name }}"
+    state: "{{ tomcat_service_state }}"
+    enabled: "{{ tomcat_service_enabled }}"

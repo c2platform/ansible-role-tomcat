@@ -1,0 +1,26 @@
+---
+- name: tomcat_git_config
+  set_fact:
+    tomcat_git_config:
+      dir: "{{ tomcat_git_config_parent_dir }}/tomcat-git-config-{{ inventory_hostname }}-{{ tomcat_git_config['repo']|hash('sha1') }}"
+
+- name: tomcat_git_clone_delegate
+  set_fact:
+    tomcat_git_clone_delegate: localhost
+  when: tomcat_git_config_control_node
+
+# Ansible Git module does support config
+- name: Git checkout ( custom )  # noqa command-instead-of-shell
+  shell: "{{ tomcat_git_config_script }}"
+  delegate_to: "{{ tomcat_git_clone_delegate|default(omit) }}"
+  changed_when: False
+  when: tomcat_git_config_script is defined
+
+- name: Git checkout
+  ansible.builtin.git:
+    repo: "{{ tomcat_git_config['repo'] }}"
+    dest: "{{ tomcat_git_config['dir'] }}"
+    version: "{{ tomcat_git_config['version']|default(omit) }}"
+  delegate_to: "{{ tomcat_git_clone_delegate|default(omit) }}"
+  changed_when: False
+  when: not tomcat_git_config_script is defined

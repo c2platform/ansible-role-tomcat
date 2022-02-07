@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{{ ansible_managed | comment('xml') }}
+<Server port="{{ tomcat_shutdown_port }}" shutdown="SHUTDOWN">
+{% for lstnr in tomcat_listeners %}
+  <Listener {{ lstnr|tomcat_server_xml_properties }} />
+{% endfor %}
+
+  <GlobalNamingResources>
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+  </GlobalNamingResources>
+
+{% for srv in tomcat_services %}
+  <Service name="{{ srv['name'] }}">
+{%   for cnctr in srv['connectors'] %}
+{%     if not cnctr['state']|default('present') == 'absent' %}
+    <Connector {{ cnctr|tomcat_server_xml_properties }} />
+{%     endif %}
+{%   endfor %}
+    <Engine {{ srv['engine']['properties']|tomcat_server_xml_properties }} >
+{%   for rlm in srv['engine']['realms'] %}
+{%     if 'realm' in rlm %}
+      <Realm {{ rlm['properties']|tomcat_server_xml_properties }}>
+        <Realm {{ rlm['realm']['properties']|tomcat_server_xml_properties }}/>
+      </Realm>
+{%     else %}
+      <Realm {{ rlm['properties']|tomcat_server_xml_properties }} />
+{%     endif %}
+{%   endfor %}
+      <Host {{ srv['engine']['host']['properties']|tomcat_server_xml_properties }}>
+{%   for vlv in srv['engine']['host']['valves'] %}
+{%     if not vlv['state']|default('present') == 'absent' %}
+        <Valve {{ vlv|tomcat_server_xml_properties }} />
+{%     endif %}
+{%   endfor %}
+{%   for ctx in srv['engine']['host']['contexts'] %}
+        <Context {{ ctx|tomcat_server_xml_properties }} />
+{%   endfor %}
+      </Host>
+    </Engine>
+  </Service>
+{% endfor %}
+</Server>

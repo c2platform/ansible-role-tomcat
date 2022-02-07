@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# Application: {{ app['name'] }}
+# Properties: {{ app['name']|c2platform.mw.tomcat_properties_file_path(app['properties_folder']|default(tomcat_apps_properties_folder)) }}
+{% for prop in app['properties']|dictsort %}
+{{ prop[0] }}={{ prop[1] }}
+{% endfor %}

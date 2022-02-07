@@ -1,0 +1,17 @@
+---
+- name: Download
+  get_url:
+    url: "{{ tomcat_versions[tomcat_version]['url'] }}"
+    dest: "/tmp/{{ tomcat_versions[tomcat_version]['url']|basename }}"
+    checksum: "{{ tomcat_versions[tomcat_version]['checksum']|default(omit) }}"
+    mode: "0644"
+
+- name: Install
+  unarchive:
+    src: "/tmp/{{ tomcat_versions[tomcat_version]['url']|basename }}"
+    dest: "{{ tomcat_home_version }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    remote_src: yes
+    extra_opts: "--strip-components=1"
+    mode: "0755"

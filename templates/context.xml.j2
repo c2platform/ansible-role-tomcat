@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{{ ansible_managed | comment('xml') }}
+<Context antiResourceLocking="false" privileged="true" >
+  <CookieProcessor className="org.apache.tomcat.util.http.Rfc6265CookieProcessor"
+                   sameSiteCookies="strict" />
+{% if not tomcat_manager['valve']['state']|default('present') == 'absent' %}
+  <Valve {{ tomcat_manager['valve']|tomcat_server_xml_properties }} />
+{% endif %}
+  <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1)?|java\.util\.(?:Linked)?HashMap"/>
+</Context>

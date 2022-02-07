@@ -1,0 +1,64 @@
+---
+- name: include assert.yml
+  import_tasks: assert.yml
+  run_once: yes
+  delegate_to: localhost
+
+- name: Group
+  group:
+    name: "{{ tomcat_group }}"
+    state: present
+
+- name: User
+  user:
+    name: "{{ tomcat_user }}"
+    state: present
+    group: "{{ tomcat_group }}"
+    createhome: yes
+    system: yes
+
+- name: Home directory
+  file:
+    path: "{{ tomcat_home_version }}"
+    state: directory
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+    mode: "0755"
+
+- name: Create home link
+  file:
+    src: "{{ tomcat_home_version }}"
+    dest: "{{ tomcat_home_link }}"
+    state: link
+
+- name: Stat bin dir  # e.g. /opt/tomcat/tomcat-9.0.40/bin
+  stat:
+    path: "{{ tomcat_home_version }}/bin"
+  register: bin_folder
+
+- include: install.yml
+  when: not bin_folder.stat.exists
+
+- include: configure.yml
+- include: git_repos.yml
+  when: tomcat_git_config is defined
+- include: configure_manager.yml
+- include: cert.yml
+
+- name: Deploy Tomcat apps
+  include: apps.yml
+  when: tomcat_apps is defined
+
+- name: Files
+  include_role:
+    name: c2platform.core.files
+    tasks_from: main
+  vars:
+    role_name: tomcat  # role_name
+    common_files: "{{ tomcat_files }}"
+    common_directories: "{{ tomcat_directories }}"
+    common_acl: "{{ tomcat_acl }}"
+
+- include: service.yml
+- include: lib.yml
+# - include: jmx.yml

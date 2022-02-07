@@ -1,0 +1,15 @@
+---
+- name: Deploy library
+  ansible.builtin.get_url:
+    url: "{{ item['url'] }}"
+    dest: "{{ tomcat_home_version }}/lib/"
+    checksum: "{{ item['checksum']|default(omit) }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_group }}"
+  with_items: "{{ tomcat_libs  }}"
+  loop_control:
+    label: "{{ item['url']|basename }}"
+  when:
+    - tomcat_libs is defined
+  notify:
+    - restart tomcat instance

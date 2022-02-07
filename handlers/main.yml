@@ -1,0 +1,11 @@
+---
+- name: systemctl daemon-reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: restart tomcat instance
+  ansible.builtin.service:
+    name: "{{ tomcat_service_name }}"
+    state: restarted
+  when:
+    - not ansible_check_mode | bool

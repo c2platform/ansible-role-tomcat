@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+{{ ansible_managed | comment('xml') }}
+<tomcat-users>
+{% for rl in tomcat_roles %}
+{%   if not tomcat_users[rl]['state']|default('present') == 'absent' %}
+  <role rolename="{{ rl }}" />
+{%   endif %}
+{% endfor %}
+{% for usr in tomcat_users %}
+{%   if not tomcat_users[usr]['state']|default('present') == 'absent' %}
+  <user {{ tomcat_users[usr]|tomcat_server_xml_properties }} />
+{%   endif %}
+{% endfor %}
+</tomcat-users>
