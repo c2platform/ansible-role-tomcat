@@ -5,7 +5,6 @@ galaxy_info:
   role_name: tomcat
   author: Onno van der Straaten <onno@onknows.com>
   description: "Installs and configures Tomcat"
-  version: "0.0.1"
   company: "OnKnows.com"
   license: "license (BSD, MIT)"
   min_ansible_version: 2.4
