@@ -17,8 +17,8 @@ jobs:
         id: cversion
         run: echo "::set-output name=version::$(grep -m 1 '## ' CHANGELOG.md | awk -F'## ' '{ print $2 }' | awk -F' ' '{ print $1 }')"
       - name: Get changes
-        id: changes
-        run: echo "::set-output name=changes::$(csplit --digits=2  --quiet --prefix=CHANGELOG-parts CHANGELOG.md "/##/+1" "{*}" && head -n -1 CHANGELOG-parts01 && rm CHANGELOG-parts0*)"
+        id: vchanges
+        run: echo "::set-output name=vchanges::$(csplit --digits=2  --quiet --prefix=CHANGELOG-parts CHANGELOG.md "/##/+1" "{*}" && head -n -1 CHANGELOG-parts01 && rm CHANGELOG-parts0*)"
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -36,7 +36,7 @@ jobs:
         with:
           tag_name: v${{ steps.cversion.outputs.version }}
           release_name: Release v${{ steps.cversion.outputs.version }}
-          body: ${{ steps.changes.outputs.changes }}
+          body: ${{ steps.vchanges.outputs.vchanges }}
           draft: false
           prerelease: true  # TODO
       - name: Trigger a new import on Galaxy.
