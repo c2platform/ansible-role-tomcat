@@ -1,4 +1,4 @@
-# Ansible Role tomcat
+# Ansible Role c2platform.tomcat
 
 Install and configure [Apache Tomcat](https://tomcat.apache.org/) on your system.
 
