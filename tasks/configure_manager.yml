@@ -9,7 +9,7 @@
     src: context.xml.j2
     dest: "{{ tomcat_home_version }}/webapps/manager/META-INF/context.xml"
     mode: "0644"
-    backup: yes
+    backup: "{{ tomcat_backup_config }}"
   when: manager_folder.stat.exists
   notify:
     - restart tomcat instance

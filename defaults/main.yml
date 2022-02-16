@@ -15,6 +15,7 @@ tomcat_service_name: tomcat
 tomcat_service_state: started
 tomcat_service_enabled: yes
 tomcat_address: 0.0.0.0
+tomcat_backup_config: false
 
 # Configure tomcat access logs
 tomcat_access_log_enabled: yes

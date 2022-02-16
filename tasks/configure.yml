@@ -4,7 +4,7 @@
     src: server.xml.j2
     dest: "{{ tomcat_home_version }}/conf/server.xml"
     mode: "0644"
-    backup: yes
+    backup: "{{ tomcat_backup_config }}"
   notify:
     - restart tomcat instance
 
@@ -13,7 +13,7 @@
     src: tomcat-users.xml.j2
     dest: "{{ tomcat_home_version }}/conf/tomcat-users.xml"
     mode: "0644"
-    backup: yes
+    backup: "{{ tomcat_backup_config }}"
   notify:
     - restart tomcat instance
 
@@ -22,6 +22,6 @@
     src: setenv.sh.j2
     dest: "{{ tomcat_home_version }}/bin/setenv.sh"
     mode: "0644"
-    backup: yes
+    backup: "{{ tomcat_backup_config }}"
   notify:
     - restart tomcat instance

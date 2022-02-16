@@ -13,7 +13,8 @@
 - name: Git checkout ( custom )  # noqa command-instead-of-shell
   shell: "{{ tomcat_git_config_script }}"
   delegate_to: "{{ tomcat_git_clone_delegate|default(omit) }}"
-  changed_when: False
+  register: _git_checkout_custom
+  changed_when: not 'Already up to date' in _git_checkout_custom.stdout
   when: tomcat_git_config_script is defined
 
 - name: Git checkout
@@ -22,5 +23,4 @@
     dest: "{{ tomcat_git_config['dir'] }}"
     version: "{{ tomcat_git_config['version']|default(omit) }}"
   delegate_to: "{{ tomcat_git_clone_delegate|default(omit) }}"
-  changed_when: False
   when: not tomcat_git_config_script is defined
