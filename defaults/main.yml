@@ -16,6 +16,7 @@ tomcat_service_state: started
 tomcat_service_enabled: yes
 tomcat_address: 0.0.0.0
 tomcat_backup_config: false
+tomcat_generate_certs: true
 
 # Configure tomcat access logs
 tomcat_access_log_enabled: yes

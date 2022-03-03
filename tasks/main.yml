@@ -44,6 +44,7 @@
   when: tomcat_git_config is defined
 - include: configure_manager.yml
 - include: cert.yml
+  when: tomcat_generate_certs
 
 - name: Deploy Tomcat apps
   include: apps.yml
