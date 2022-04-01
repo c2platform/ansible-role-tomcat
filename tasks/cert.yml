@@ -1,27 +1,7 @@
 ---
-- name: Generate server private key
-  openssl_privatekey:
-    path: "{{ tomcat_home_version }}/conf/https.key"
-    owner: "{{ tomcat_user }}"
-    group: "{{ tomcat_group }}"
-
-- name: Create certificate signing request
-  openssl_csr:
-    path: "{{ tomcat_home_version }}/conf/https.csr"
-    privatekey_path: "{{ tomcat_home_version }}/conf/https.key"
-    country_name: "NL"
-    organization_name: ""
-    email_address: ""
-    common_name: "{{ ansible_fqdn }}"
-    subject_alt_name: "{{ tomcat_cert_subject_alt_names|default(omit) }}"
-    owner: "{{ tomcat_user }}"
-    group: "{{ tomcat_group }}"
-
-- name: Generate a Self Signed OpenSSL certificate.
-  openssl_certificate:
-    path: "{{ tomcat_home_version }}/conf/https.crt"
-    privatekey_path: "{{ tomcat_home_version }}/conf/https.key"
-    csr_path: "{{ tomcat_home_version }}/conf/https.csr"
-    provider: selfsigned
-    owner: "{{ tomcat_user }}"
-    group: "{{ tomcat_group }}"
+- name: Include certs tasks
+  include_role:
+    name: c2platform.core.cacerts2
+    tasks_from: certs
+  vars:
+    cacerts2_role_name: tomcat

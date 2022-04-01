@@ -23,4 +23,5 @@
     dest: "{{ tomcat_git_config['dir'] }}"
     version: "{{ tomcat_git_config['version']|default(omit) }}"
   delegate_to: "{{ tomcat_git_clone_delegate|default(omit) }}"
+  changed_when: False
   when: not tomcat_git_config_script is defined
