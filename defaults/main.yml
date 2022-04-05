@@ -13,7 +13,7 @@ tomcat_ajp_port: 8009
 tomcat_jre_home: /usr
 tomcat_service_name: tomcat
 tomcat_service_state: started
-tomcat_service_enabled: yes
+tomcat_service_enabled: true
 tomcat_address: 0.0.0.0
 tomcat_backup_config: false
 tomcat_generate_certs: true

@@ -9,4 +9,4 @@
     state: restarted
   when:
     - not ansible_check_mode | bool
-    - tomcat_service_enabled
+    - tomcat_service_enabled | bool
