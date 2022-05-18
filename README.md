@@ -1,5 +1,7 @@
 # Ansible Role c2platform.tomcat
 
+[![Linters ( Ansible, YAML )](https://github.com/c2platform/ansible-role-tomcat/actions/workflows/ci.yml/badge.svg)](https://github.com/c2platform/ansible-role-tomcat/actions/workflows/ci.yml) [![Release and deploy to Galaxy](https://github.com/c2platform/ansible-role-tomcat/actions/workflows/release.yml/badge.svg)](https://github.com/c2platform/ansible-role-tomcat/actions/workflows/release.yml)
+
 Install and configure [Apache Tomcat](https://tomcat.apache.org/) on your system.
 
 <!-- MarkdownTOC levels="2,3,4" autolink="true" -->
