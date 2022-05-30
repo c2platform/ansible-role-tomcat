@@ -23,7 +23,7 @@
     state: directory
     owner: "{{ tomcat_user }}"
     group: "{{ tomcat_group }}"
-    mode: "0755"
+    mode: "{{ tomcat_home_dir_mode }}"
 
 - name: Create home link
   file:

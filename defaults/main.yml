@@ -17,6 +17,7 @@ tomcat_service_enabled: true
 tomcat_address: 0.0.0.0
 tomcat_backup_config: false
 tomcat_generate_certs: true
+tomcat_home_dir_mode: '0750'
 
 # Configure tomcat access logs
 tomcat_access_log_enabled: yes

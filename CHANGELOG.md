@@ -2,6 +2,10 @@
 
 This file is used to list changes made in each version of the [c2platform.tomcat](https://github.com/c2platform/ansible-role-tomcat) cookbook.
 
+## 0.1.4 (2022-05-30)
+
+* tomcat home not world readable using `tomcat_home_dir_mode`.
+
 ## 0.1.3 (2022-04-05)
 
 * don't trigger restart handler if `tomcat_service_enabled: false`
