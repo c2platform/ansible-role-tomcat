@@ -2,7 +2,7 @@
 
 This file is used to list changes made in each version of the [c2platform.tomcat](https://github.com/c2platform/ansible-role-tomcat) cookbook.
 
-## 0.1.5 (2022-10-24)
+## 0.1.6 (2022-10-24)
 
 * Moved to GitLab see [c2platform.mw.tomcat](https://gitlab.com/c2platform/ansible-collection-mw/-/blob/master/roles/tomcat/README.md).
 
